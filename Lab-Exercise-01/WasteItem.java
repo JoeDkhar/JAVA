@@ -1,102 +1,74 @@
 class WasteItem {
-
     private String wasteType;
-    private double quantity;
-    private String disposalMethod;
+    private int quantity;
+    private StringBuffer disposalMethod;
     private String region;
 
+    private static int totalWasteCollected = 0;
+    private static int recyclingWaste = 0;
+    private static int compostingWaste = 0;
+    private static int incinerationWaste = 0;
 
-    private static double totalWasteCollected = 0;
-    private static double totalPlasticWaste = 0;
-    private static double totalOrganicWaste = 0;
-    private static double totalHazardousWaste = 0;
-
-
-    public WasteItem() {
-        this.wasteType = "Unknown";
-        this.quantity = 0;
-        this.disposalMethod = "Unknown";
-        this.region = "Unknown";
-    }
-
-
-    public WasteItem(String wasteType, double quantity, String disposalMethod, String region) {
+    public WasteItem(String wasteType, int quantity, String disposalMethod, String region) {
         this.wasteType = wasteType;
         this.quantity = quantity;
-        this.disposalMethod = disposalMethod;
+        this.disposalMethod = new StringBuffer(disposalMethod);
         this.region = region;
-        updateWasteTotals();
+
+        totalWasteCollected += quantity;
+        updateCategoryTotals(disposalMethod, quantity);
     }
 
-
-    public String getWasteType() {
-        return wasteType;
+    public void displayWasteDetails() {
+        System.out.println("Waste Type: " + wasteType);
+        System.out.println("Quantity: " + quantity + " kg");
+        System.out.println("Disposal Method: " + disposalMethod);
+        System.out.println("Region: " + region);
     }
-
-    public void setWasteType(String wasteType) {
-        this.wasteType = wasteType;
-        updateWasteTotals();
-    }
-
-    public double getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(double quantity) {
-        this.quantity = quantity;
-        updateWasteTotals();
-    }
-
-    public String getDisposalMethod() {
-        return disposalMethod;
-    }
-
-    public void setDisposalMethod(String disposalMethod) {
-        this.disposalMethod = disposalMethod;
-    }
-
-    public String getRegion() {
-        return region;
-    }
-
-    public void setRegion(String region) {
-        this.region = region;
-    }
-
 
     public static void displayTotalWasteCollected() {
         System.out.println("Total Waste Collected: " + totalWasteCollected + " kg");
     }
 
     public static void displayCategoryTotals() {
-        System.out.println("Plastic Waste: " + totalPlasticWaste + " kg");
-        System.out.println("Organic Waste: " + totalOrganicWaste + " kg");
-        System.out.println("Hazardous Waste: " + totalHazardousWaste + " kg");
+        System.out.println("Recycling Waste: " + recyclingWaste + " kg");
+        System.out.println("Composting Waste: " + compostingWaste + " kg");
+        System.out.println("Incineration Waste: " + incinerationWaste + " kg");
     }
 
-
-    private void updateWasteTotals() {
-        totalWasteCollected += this.quantity;
-        if (this.wasteType.equalsIgnoreCase("plastic")) {
-            totalPlasticWaste += this.quantity;
-        } else if (this.wasteType.equalsIgnoreCase("organic")) {
-            totalOrganicWaste += this.quantity;
-        } else if (this.wasteType.equalsIgnoreCase("hazardous")) {
-            totalHazardousWaste += this.quantity;
+    private static void updateCategoryTotals(String disposalMethod, int quantity) {
+        switch (disposalMethod.toLowerCase()) {
+            case "recycling":
+                recyclingWaste += quantity;
+                break;
+            case "composting":
+                compostingWaste += quantity;
+                break;
+            case "incineration":
+                incinerationWaste += quantity;
+                break;
         }
     }
 
-
-    public void displayWasteDetails() {
-        System.out.println("Waste Type: " + this.wasteType);
-        System.out.println("Quantity: " + this.quantity + " kg");
-        System.out.println("Disposal Method: " + this.disposalMethod);
-        System.out.println("Region: " + this.region);
+    public void setQuantity(int quantity) {
+        totalWasteCollected -= this.quantity;
+        totalWasteCollected += quantity;
+        this.quantity = quantity;
     }
 
+    public void setWasteType(String wasteType) {
+        this.wasteType = wasteType;
+    }
 
-    public void updateDisposalMethod(String newDisposalMethod) {
-        this.disposalMethod = newDisposalMethod;
-        System.out.println("Disposal method updated to: " + this.disposalMethod);
+    public String getRegion() {
+        return this.region;
+    }
+
+    public void updateDisposalMethod(String newMethod) {
+        this.disposalMethod.replace(0, this.disposalMethod.length(), newMethod);
+    }
+
+    public void updateDisposalMethod(String methodPrefix, String methodSuffix) {
+        this.disposalMethod.replace(0, this.disposalMethod.length(), methodPrefix + " " + methodSuffix);
     }
 }
